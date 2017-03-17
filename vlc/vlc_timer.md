@@ -253,3 +253,52 @@ unsigned vlc_timer_getoverrun (vlc_timer_t timer)
 }
 
 `
+
+
+
+##8  我实现的不足
+
+
+`
+/*定时器函数 */
+static void *StopWatcherThreadFunc(void * object){
+        input_thread_t *p_input = (input_thread_t *)object;
+        int wait_time=100000; /*毫秒*/
+        //int count=1;
+        if(YC_D_STOP) msg_Dbg(p_input,"---IN StopWatcherThreadFunc begin --");
+        while(p_input->p->b_inputStopWatherStop==false){               
+                ObjectKillChildrens( VLC_OBJECT(p_input) );
+                usleep(wait_time);  //改一下，改成cond阻塞，那啥时候触发自己呢，谁来触发呢？或者先sleep30毫秒，没有退出就发一次，然后sleep，等待inputClose来结束自己。
+                wait_time = wait_time +100000;  
+                //count=count+2;
+                if(wait_time >= 500000){
+                        wait_time = 500000;
+                }
+        }       
+        p_input->p->b_inputStopWatherStop==true;
+        wait_time= 100000;       
+        if(YC_D_STOP) msg_Dbg(p_input,"---IN StopWatcherThreadFunc end --");
+}
+/*
+创建input stop 执行结果的监控线程 ,TODO 该函数只允许调用一次
+0 成功， -1 失败 
+*/
+static int create_inputStopWatcher(input_thread_t *p_input){       
+        p_input->p->b_inputStopWatherStop= false;
+        int ret= !vlc_clone( &p_input->p->input_stop_watcher_thread,
+                                         StopWatcherThreadFunc, p_input, VLC_THREAD_PRIORITY_INPUT );
+        if(! ret ){
+                if(YC_D_STOP) msg_Dbg(p_input,"---create_inputStopWather fail --");
+                return -1;
+        }
+        p_input->p->b_inputStopWatherStop= false;
+        return 0;
+}
+/*退出*/
+static void destroy_inputStopWatcher(input_thread_t *p_input){
+        p_input->p->b_inputStopWatherStop= true;
+        vlc_join(p_input->p->input_stop_watcher_thread,NULL);
+        if(YC_D_STOP) msg_Dbg(p_input,"---destroy_inputStopWatcher  end --");
+}
+
+`
