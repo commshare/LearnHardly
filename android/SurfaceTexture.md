@@ -2,7 +2,7 @@
 
 ##1 
 
-###1 
+###1.1 
 
 `
 /**
@@ -23,7 +23,7 @@
 调用updateTexImage时，当SurfaceTexture已经被创建后，指定的纹理对象的内容会呗更新以含有来自image流的最近的图像。
 这可能会引起流的一些图像被跳过。
 
-###2 
+###1.2 
 `
  * <p>A SurfaceTexture may also be used in place of a SurfaceHolder when specifying the output
  * destination of the older {@link android.hardware.Camera} API. Doing so will cause all the
@@ -35,7 +35,7 @@
 这样做 的结果是所有的来自图像流的frame会被发送到一个SurfaceTexture对象而不是送到设备的显示器。
 
 
-###3 
+###1.3 
 
 `
 
@@ -60,7 +60,7 @@
 比如说，从图形的底部左边角落 采样，可以通过queried的矩阵的转换列向量 （0,0,0,1）来实现，从图像右上角采样可以通过转换矩阵（1，1,0,1）来实现。
 
 
-## 4 
+## 1.4 
 `
 
  * <p>The texture object uses the GL_TEXTURE_EXTERNAL_OES texture target, which is defined by the
@@ -80,7 +80,7 @@
  这样的一个shader必需也要使用samplerExternalOES GLSL 采样类型来访问纹理。
 
 
-### 5 
+### 1.5 
 
  `
  * <p>SurfaceTexture objects may be created on any thread.  {@link #updateTexImage} may only be
