@@ -552,3 +552,8 @@ attach这个纹理到当前正在调用线程的OPENGLES的上下文。
     static { nativeClassInit(); }
 }
 `
+
+
+##3 
+有大神做的更深入的解析
+[Android绘制系统(3):-SurfaceTexture](https://github.com/clarkehe/Android/wiki/Android%E7%BB%98%E5%88%B6%E7%B3%BB%E7%BB%9F(3):-SurfaceTexture)
