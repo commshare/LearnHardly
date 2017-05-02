@@ -116,13 +116,24 @@ deb http://www.rabbitmq.com/debian/ testing main
 - 遇到log fail的问题
 - [参考] (http://stackoverflow.com/questions/22850546/cant-access-rabbitmq-web-management-interface-after-fresh-install)
 
-- 新增一个test的用户： 
+- 新增一个test的用户, 管理员权限： 可登陆管理控制台(启用management plugin的情况下)，可查看所有的信息，并且可以对用户，策略(policy)进行操作。
+
+
 ```
 rabbitmqctl add_user test test
-rabbitmqctl set_user_tags test administrator
+rabbitmqctl set_user_tags test administrator 
 rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
 ```
 使用test test登录。
+
+
+查看指定用户的权限信息
+```
+root@ubuntu:/tmp# rabbitmqctl  list_user_permissions test
+Listing permissions for user "test" ...
+/       .*      
+```
+
 
 #5 发现没有配置文件
 
@@ -131,4 +142,25 @@ Config file	/etc/rabbitmq/rabbitmq.config (not found)
 Database directory	/var/lib/rabbitmq/mnesia/rabbit@ubuntu
 Log file	/var/log/rabbitmq/rabbit@ubuntu.log
 SASL log file	/var/log/rabbitmq/rabbit@ubuntu-sasl.log
+```
+
+
+
+#6 验证rabbitmq 的端口
+- [RabbitMQ 消息队列 配置] (http://jicki.blog.51cto.com/1323993/1631170)
+- 其中5672为默认的rabbitmq监听端口，15672端口为WEB界面访问需要打开的端口。
+
+```
+root@ubuntu:/tmp# netstat -plantup|grep 15672
+tcp        0      0 0.0.0.0:15672           0.0.0.0:*               LISTEN      53115/beam.smp  
+tcp        0      0 172.25.21.13:15672      172.25.21.8:20663       TIME_WAIT   -               
+tcp        0      0 172.25.21.13:15672      172.25.21.8:20688       TIME_WAIT   -               
+tcp        0      0 172.25.21.13:15672      172.25.21.8:20693       ESTABLISHED 53115/beam.smp  
+root@ubuntu:/tmp# netstat -plantup|grep 5672
+tcp        0      0 0.0.0.0:25672           0.0.0.0:*               LISTEN      53115/beam.smp  
+tcp        0      0 0.0.0.0:15672           0.0.0.0:*               LISTEN      53115/beam.smp  
+tcp        0      0 172.25.21.13:15672      172.25.21.8:20688       TIME_WAIT   -               
+tcp        0      0 172.25.21.13:15672      172.25.21.8:20693       ESTABLISHED 53115/beam.smp  
+tcp6       0      0 :::5672                 :::*                    LISTEN      53115/beam.smp  
+root@ubuntu:/tmp# 
 ```
