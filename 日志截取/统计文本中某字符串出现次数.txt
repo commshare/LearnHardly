@@ -1,0 +1,35 @@
+
+# cat /data/yy/log/xcrs_performer_recovery/recovery.dump | grep -o TI | wc -l
+
+
+# 
+
+。【Shell】统计文件里面特定字符串出现次数
+ 分类： Linux2009-06-09 15:50:32
+下面三个方法都可以完成这个需求
+
+1.第一种方法：使用grep命令进行统计
+grep -o '字符串' file |wc -l
+
+2.第二种方法：使用awk命令进行统计
+awk -v RS="@#$j" '{print gsub(/字符串/,"&")}' file
+
+3.第三种方法：另一种使用awk命令进行统计的方法
+awk  '{s+=gsub(/字符串/,"&")}END{print s}' file
+
+
+上述方法测试结果如下：
+$ cat test
+select select
+select
+
+$ grep -o 'select' test |wc -l
+3
+
+$ awk -v RS="@#$j" '{print gsub(/select/,"&")}' test
+3
+
+$ awk  '{s+=gsub(/select/,"&")}END{print s}' test
+3
+
+-- The End --
